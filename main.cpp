@@ -4,18 +4,17 @@
 #include "./api/json.hpp"
 
 int main() {
-    std::string clientId = "id";
-    std::string clientCreds = "credidentials";
+    std::string clientId = "";
+    std::string clientCreds = "";
 
     SpotifyAPI spotifyAPI(clientId, clientCreds);
 
     spotifyAPI.setToken();
 
     // get data
-    std::string endpoint = "/v1/artists/2feDdbD5araYcm6JhFHHw7";
+    nlohmann::json j = spotifyAPI.getTrack("4Cus7EuLI1pdrdbJz0dnFa");
 
-    nlohmann::json j = spotifyAPI.request(endpoint, "");
-    std::cout << j;
+    std::cout << j.dump(4) << std::endl;
 
     return 0;
 }

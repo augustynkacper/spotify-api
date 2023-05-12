@@ -66,3 +66,15 @@ void SpotifyAPI::setToken() {
     header = "Authorization: Bearer " + token;
 }
 
+nlohmann::json SpotifyAPI::getAlbum(const std::string id) {
+    return request("/v1/albums/" + id, "");
+}
+
+nlohmann::json SpotifyAPI::getArtist(const std::string id) {
+    return request("/v1/artists/" + id, "");
+}
+
+nlohmann::json SpotifyAPI::getTrack(const std::string id) {
+    return request("/v1/tracks/" + id, "");
+}
+
