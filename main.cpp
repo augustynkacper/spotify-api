@@ -1,15 +1,21 @@
 #include <iostream>
-#include "./api/SpotifyToken.h"
+#include "./api/SpotifyAPI.h"
+
+#include "./api/json.hpp"
 
 int main() {
-    std::string clientId = "clientid";
-    std::string clientCreds = "clientcred";
+    std::string clientId = "id";
+    std::string clientCreds = "credidentials";
 
-    SpotifyToken spotifyToken(clientId, clientCreds);
+    SpotifyAPI spotifyAPI(clientId, clientCreds);
 
-    spotifyToken.setToken();
+    spotifyAPI.setToken();
 
-    std::cout<<spotifyToken.getToken()<<std::endl;
+    // get data
+    std::string endpoint = "/v1/artists/2feDdbD5araYcm6JhFHHw7";
+
+    nlohmann::json j = spotifyAPI.request(endpoint, "");
+    std::cout << j;
 
     return 0;
 }
