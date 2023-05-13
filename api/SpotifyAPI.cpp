@@ -19,18 +19,20 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* res
     return totalSize;
 }
 
-json SpotifyAPI::request(const string endpoint, const string data) {
+json SpotifyAPI::request(const string endpoint, const string data, const string request) {
     CURL* curl;
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
 
     string response;
 
-    url += endpoint;
+    string tmpurl = url + endpoint;
 
     if (curl) {
+        //curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, request.c_str());
+
         // URL
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, tmpurl.c_str());
 
         // HEADERS
         if ( !token.empty() ){
@@ -48,33 +50,43 @@ json SpotifyAPI::request(const string endpoint, const string data) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        curl_easy_perform(curl);
+        CURLcode res = curl_easy_perform(curl);
+
         curl_easy_cleanup(curl);
 
-        return json::parse(response);
+
     }
+    if (response.empty()){
+        return nlohmann::json();
+    }
+    return json::parse(response);
     return NULL;
 }
 
 void SpotifyAPI::setToken() {
     string data = "grant_type=client_credentials&client_id="+clientId+"&client_secret="+clientCreds;
 
-    json j = request("/api/token", data);
+    json j = request("/api/token", data, "GET");
 
+    // update token, url, header when token received
     token = j["access_token"];
     url = "https://api.spotify.com";
     header = "Authorization: Bearer " + token;
 }
 
 nlohmann::json SpotifyAPI::getAlbum(const std::string id) {
-    return request("/v1/albums/" + id, "");
+    return request("/v1/albums/" + id, "", "GET");
 }
 
 nlohmann::json SpotifyAPI::getArtist(const std::string id) {
-    return request("/v1/artists/" + id, "");
+    return request("/v1/artists/" + id, "", "GET");
 }
 
 nlohmann::json SpotifyAPI::getTrack(const std::string id) {
-    return request("/v1/tracks/" + id, "");
+    return request("/v1/tracks/" + id, "", "GET");
+}
+
+nlohmann::json SpotifyAPI::getArtistTopTracks(const std::string id) {
+    return request("/v1/artists/" + id + "/top-tracks?country=PL", "", "GET");
 }
 

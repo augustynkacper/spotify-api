@@ -19,11 +19,12 @@ public :
     SpotifyAPI(std::string, std::string);
     void setToken();
     [[nodiscard]] std::string getToken() const { return token; }
-    nlohmann::json request(const std::string endpoint, const std::string data);
+    nlohmann::json request(const std::string endpoint, const std::string data, const std::string request);
 
     nlohmann::json getAlbum(const std::string);
     nlohmann::json getArtist(const std::string);
     nlohmann::json getTrack(const std::string);
+    nlohmann::json getArtistTopTracks(const std::string);
 };
 
 

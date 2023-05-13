@@ -2,6 +2,11 @@
 #include "./api/SpotifyAPI.h"
 
 #include "./api/json.hpp"
+#include "entities/Artist.h"
+
+#include <future>
+
+using namespace std;
 
 int main() {
     std::string clientId = "";
@@ -11,10 +16,16 @@ int main() {
 
     spotifyAPI.setToken();
 
-    // get data
-    nlohmann::json j = spotifyAPI.getTrack("4Cus7EuLI1pdrdbJz0dnFa");
+    nlohmann::json j = spotifyAPI.getArtist("0iEtIxbK0KxaSlF7G42ZOp");
+    Artist artist(j);
+    cout<<j.dump(3)<<endl;
+    j = spotifyAPI.getArtistTopTracks("0iEtIxbK0KxaSlF7G42ZOp");
 
-    std::cout << j.dump(4) << std::endl;
+    artist.setTopTracks(j);
+    cout<<j.dump(3)<<endl;
+    for(Track track : artist.getTopTracks()){
+        cout<<track.getName()<<endl;
+    }
 
     return 0;
 }
