@@ -2,7 +2,10 @@
 #include <iostream>
 #include "SpotifyAPI.h"
 
-#include "json.hpp"
+#include "../json.hpp"
+#include "../entities/Artist.h"
+#include "../entities/Album.h"
+#include "../entities/Track.h"
 
 using json = nlohmann::json;
 
@@ -74,16 +77,22 @@ void SpotifyAPI::setToken() {
     header = "Authorization: Bearer " + token;
 }
 
-nlohmann::json SpotifyAPI::getAlbum(const std::string id) {
-    return request("/v1/albums/" + id, "", "GET");
+Album SpotifyAPI::getAlbum(const std::string id) {
+    nlohmann::json json = request("/v1/albums/" + id, "", "GET");
+    return Album(json);
 }
 
-nlohmann::json SpotifyAPI::getArtist(const std::string id) {
-    return request("/v1/artists/" + id, "", "GET");
+Artist SpotifyAPI::getArtist(const std::string id) {
+    nlohmann::json json = request("/v1/artists/" + id, "", "GET");
+    Artist artist = Artist(json);
+    json = SpotifyAPI::getArtistTopTracks(id);
+    artist.setTopTracks(json);
+    return artist;
 }
 
-nlohmann::json SpotifyAPI::getTrack(const std::string id) {
-    return request("/v1/tracks/" + id, "", "GET");
+Track SpotifyAPI::getTrack(const std::string id) {
+    nlohmann::json json = request("/v1/tracks/" + id, "", "GET");
+    return Track(json);
 }
 
 nlohmann::json SpotifyAPI::getArtistTopTracks(const std::string id) {

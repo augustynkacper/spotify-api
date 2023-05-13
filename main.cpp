@@ -1,31 +1,23 @@
 #include <iostream>
+
 #include "./api/SpotifyAPI.h"
-
-#include "./api/json.hpp"
 #include "entities/Artist.h"
+#include "entities/Track.h"
+#include "entities/Album.h"
 
-#include <future>
+
 
 using namespace std;
 
 int main() {
-    std::string clientId = "";
-    std::string clientCreds = "";
+    std::string clientId = "1b4db4f55bd94081b6c02f47becb3b2f";
+    std::string clientCreds = "517070415c5540019ad22c282f88d907";
 
     SpotifyAPI spotifyAPI(clientId, clientCreds);
-
     spotifyAPI.setToken();
 
-    nlohmann::json j = spotifyAPI.getArtist("0iEtIxbK0KxaSlF7G42ZOp");
-    Artist artist(j);
-    cout<<j.dump(3)<<endl;
-    j = spotifyAPI.getArtistTopTracks("0iEtIxbK0KxaSlF7G42ZOp");
+    Artist artist = spotifyAPI.getArtist("0iEtIxbK0KxaSlF7G42ZOp");
 
-    artist.setTopTracks(j);
-    cout<<j.dump(3)<<endl;
-    for(Track track : artist.getTopTracks()){
-        cout<<track.getName()<<endl;
-    }
 
     return 0;
 }
