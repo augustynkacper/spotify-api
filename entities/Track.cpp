@@ -1,4 +1,5 @@
 #include "Track.h"
+#include <iostream>
 
 Track::Track(nlohmann::json j) {
     this->name = j["name"];
@@ -6,4 +7,15 @@ Track::Track(nlohmann::json j) {
     this->duration = j["duration_ms"];
     this->imgUrl = j["album"]["images"][0]["url"];
     this->id = j["id"];
+
+    for(nlohmann::json artist : j["artists"]){
+        artists.push_back(artist["name"]);
+    }
 }
+
+void Track::setSongsRecommendations(nlohmann::json json) {
+    for(nlohmann::json j : json["tracks"]) {
+        recommendations.push_back(Track(j));
+    }
+}
+

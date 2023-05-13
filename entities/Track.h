@@ -3,7 +3,7 @@
 #define SPOTIFY_API_TRACK_H
 
 #include <string>
-#include "../api/json.hpp"
+#include "../json.hpp"
 
 using namespace std;
 
@@ -13,6 +13,8 @@ private:
 
     string id;
     string imgUrl;
+    vector<string> artists;
+    vector<Track> recommendations;
 
     int popularity;
     int duration;
@@ -21,12 +23,15 @@ public:
 
     Track(nlohmann::json);
 
+    void setSongsRecommendations( nlohmann::json);
+
     [[nodiscard]] string getName() const { return name; }
     [[nodiscard]] string getImgUrl() const { return imgUrl; }
     [[nodiscard]] int getDuration() const { return duration; }
     [[nodiscard]] int getPopularity() const { return popularity; }
     [[nodiscard]] string getId() const { return id; }
-
+    [[nodiscard]] vector<string> getArtists() const { return artists; }
+    [[nodiscard]] const vector<Track> getRecommendations() const { return recommendations; }
 };
 
 
