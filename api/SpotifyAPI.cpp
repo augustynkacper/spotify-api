@@ -113,8 +113,3 @@ nlohmann::json SpotifyAPI::getArtistTopTracks(const std::string id) {
 nlohmann::json SpotifyAPI::getSongsRecommendations(std::map<std::string, std::string> options) {
     return request("/v1/recommendations", options);;
 }
-
-//vector<Track> SpotifyAPI::getSongsRecommendations(std::map<std::string, std::string>) {
-//    return request("/v1/recommendations", "");
-//}
-

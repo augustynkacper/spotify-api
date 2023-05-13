@@ -3,9 +3,6 @@
 #include "./api/SpotifyAPI.h"
 #include "entities/Artist.h"
 #include "entities/Track.h"
-#include "entities/Album.h"
-
-
 
 using namespace std;
 
