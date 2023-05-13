@@ -10,8 +10,8 @@
 using namespace std;
 
 int main() {
-    std::string clientId = "1b4db4f55bd94081b6c02f47becb3b2f";
-    std::string clientCreds = "517070415c5540019ad22c282f88d907";
+    std::string clientId = "";
+    std::string clientCreds = "";
 
     SpotifyAPI spotifyAPI(clientId, clientCreds);
     spotifyAPI.setToken();
