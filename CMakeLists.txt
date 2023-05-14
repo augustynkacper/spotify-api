@@ -16,8 +16,6 @@ include(${wxWidgets_USE_FILE})
 include_directories(${CURL_INCLUDE_DIRS})
 
 # link wxWidgets library
-target_link_libraries(gui ${wxWidgets_LIBRARIES})
+target_link_libraries(gui curl ${wxWidgets_LIBRARIES} ${wxWidgets_COMPONENTS})
 
-# link curl library
-target_link_libraries(gui curl)
 target_link_libraries(spotify_api curl)

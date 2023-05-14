@@ -57,8 +57,6 @@ json SpotifyAPI::request(const string endpoint, const map<string,string> options
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         CURLcode res = curl_easy_perform(curl);
-        //cout<<tmpurl<<endl;
-        //cout<<response<<endl;
 
         if (res == CURLE_OK) cout<< "yooo" <<endl;
         else cout << "beeee" <<endl;
@@ -122,7 +120,10 @@ std::pair<std::vector<Artist>, std::vector<Track>> SpotifyAPI::search(map<string
     nlohmann::json json = request("/v1/search", options);
 
     for (nlohmann::json j : json["artists"]["items"]){
-        artists.push_back(Artist(j));
+        Artist artist(j);
+        j = getArtistTopTracks(artist.getId());
+        artist.setTopTracks(j);
+        artists.push_back(artist);
     }
 
     for (nlohmann::json j : json["tracks"]["items"]){

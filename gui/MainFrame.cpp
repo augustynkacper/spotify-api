@@ -1,8 +1,13 @@
 #include "MainFrame.h"
 #include "../api/SpotifyAPI.h"
 #include <wx/wx.h>
+#include <wx/statbmp.h>
+#include <wx/wxhtml.h>
+#include <wx/sizer.h>
 #include <iostream>
-
+#include "wx/url.h"
+#include <wx/mstream.h>
+#include <wx/mediactrl.h>
 
 MainFrame::MainFrame(const wxString& title, SpotifyAPI *spotifyApi) : wxFrame(nullptr, wxID_ANY, title) {
     this->spotifyApi = spotifyApi;
@@ -10,8 +15,6 @@ MainFrame::MainFrame(const wxString& title, SpotifyAPI *spotifyApi) : wxFrame(nu
 
     searchPanel = new wxPanel(this);
     resultPanel = new wxPanel(this);
-
-    resultPanel->SetBackgroundColour(wxColour("blue"));
 
     // search button and text input
     searchButton = new wxButton(searchPanel, wxID_ANY, "Search", wxDefaultPosition, wxSize(100, 35));
@@ -39,7 +42,7 @@ void MainFrame::OnSearchButtonClicked(wxCommandEvent &) {
     options.insert(make_pair("q", input));
     options.insert(make_pair("type", "artist,track"));
     options.insert(make_pair("limit", "5"));
-    cout<<"essa1"<<endl;
+
     pair<vector<Artist>, vector<Track>> result = spotifyApi->search(options);
 
     ShowSearchResults(result);
@@ -49,7 +52,37 @@ void MainFrame::OnSearchButtonClicked(wxCommandEvent &) {
 
 void MainFrame::ShowTrack(Track track) {
     ClearResultPanel();
-    wxStaticText* textField = new wxStaticText(resultPanel, wxID_ANY, track.getName());
+
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+    wxFont font(wxFontInfo(20).Family(wxFONTFAMILY_DEFAULT).FaceName("Arial").Bold());
+
+    //Artist Name
+    wxStaticText* nameLabel = new wxStaticText(resultPanel, wxID_ANY, track.getName(), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+    nameLabel->SetFont(font);
+    sizer->Add(nameLabel);
+
+
+    string artists = "";
+    int i=0;
+    for(string artist : track.getArtists()){
+        artists += artist;
+        if (i+1==track.getArtists().size()){
+            break;
+        }
+        artists+=", ";
+        i += 1;
+    }
+
+    wxStaticText* artistsLabel = new wxStaticText(resultPanel, wxID_ANY, artists);
+    sizer->Add(artistsLabel);
+
+    // Popularity
+    wxString popularityText = wxString::Format("Popularity: %d", track.getPopularity());
+    wxStaticText* popularityLabel = new wxStaticText(resultPanel, wxID_ANY, popularityText);
+    sizer->Add(popularityLabel);
+
+    resultPanel->SetSizerAndFit(sizer);
     resultPanel->Layout();
 }
 
@@ -61,21 +94,32 @@ void MainFrame::ShowSearchResults(pair<vector<Artist>, vector<Track>> result) {
 
     wxFont font(20, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 
-    wxPanel* artistPanel = new wxPanel(resultPanel);
-    wxBoxSizer* artistsSizer = new wxBoxSizer(wxVERTICAL);
-    artistPanel->SetBackgroundColour(wxColour("red"));
-    wxStaticText* artistHeader = new wxStaticText(artistPanel, wxID_ANY, "Found artists:");
-    if (font.IsOk())
-        artistHeader->SetFont(font);
-    artistsSizer->Add(artistHeader);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* artistHeader = new wxStaticText(resultPanel, wxID_ANY, "Found artists:");
+    artistHeader->SetFont(font);
+    sizer->Add(artistHeader);
 
     for (Artist artist : result.first){
-        wxButton* btn = new wxButton(artistPanel, wxID_ANY, artist.getName());
+        wxButton* btn = new wxButton(resultPanel, wxID_ANY, artist.getName());
         btn->SetClientData(new Artist(artist));
         btn->Bind(wxEVT_BUTTON, &MainFrame::OnArtistButtonClicked, this);
-        artistsSizer->Add(btn);
+        sizer->Add(btn, 0, wxBOTTOM, 3);
     }
-    artistPanel->SetSizerAndFit(artistsSizer);
+
+    wxStaticText* tracksHeader = new wxStaticText(resultPanel, wxID_ANY, "Found tracks:");
+    tracksHeader->SetFont(font);
+    sizer->Add(tracksHeader);
+
+    for (Track track : result.second){
+        wxButton* btn = new wxButton(resultPanel, wxID_ANY, track.getName());
+        btn->SetClientData(new Track(track));
+        btn->Bind(wxEVT_BUTTON, &MainFrame::OnTrackButtonClicked, this);
+        sizer->Add(btn, 0, wxBOTTOM, 3);
+    }
+
+
+    resultPanel->SetSizerAndFit(sizer);
 
     resultPanel->Layout();
 }
@@ -89,13 +133,35 @@ void MainFrame::ClearResultPanel() {
 
 void MainFrame::ShowArtist(Artist artist) {
     ClearResultPanel();
-    cout<<"entered artist panel"<<endl;
-    wxPanel* artistPanel = new wxPanel(resultPanel);
-    cout<<"panel created"<<endl;
-    wxStaticText* artistHeader = new wxStaticText(artistPanel, wxID_ANY, artist.getName());
-    cout<<"text created"<<endl;
-    artistPanel->Layout();
-    cout<<"artist panel updated"<<endl;
+
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+    wxFont font(wxFontInfo(20).Family(wxFONTFAMILY_DEFAULT).FaceName("Arial").Bold());
+
+    //Artist Name
+    wxStaticText* nameLabel = new wxStaticText(resultPanel, wxID_ANY, artist.getName());
+    nameLabel->SetFont(font);
+    sizer->Add(nameLabel);
+
+    // Followers
+    wxString followersText = wxString::Format("Followers: %d", artist.getFollowers());
+    wxStaticText* followersLabel = new wxStaticText(resultPanel, wxID_ANY, followersText);
+    sizer->Add(followersLabel);
+
+    // Popularity
+    wxString popularityText = wxString::Format("Popularity: %d", artist.getPopularity());
+    wxStaticText* popularityLabel = new wxStaticText(resultPanel, wxID_ANY, popularityText);
+    sizer->Add(popularityLabel);
+
+    //cout<<artist.getTopTracks().size()<<endl;
+    for(Track track : artist.getTopTracks()){
+        wxButton* btn = new wxButton(resultPanel, wxID_ANY, track.getName());
+        btn->SetClientData(new Track(track));
+        btn->Bind(wxEVT_BUTTON, &MainFrame::OnTrackButtonClicked, this);
+        sizer->Add(btn);
+    }
+
+    resultPanel->SetSizerAndFit(sizer);
     resultPanel->Layout();
 }
 
@@ -104,12 +170,32 @@ void MainFrame::OnArtistButtonClicked(wxCommandEvent &event) {
 
     if ( button ) {
         Artist *artist = (Artist*) button->GetClientData();
-        cout<<"artist caste"<<endl;
-        cout<<artist->getId()<<endl;
         MainFrame::ShowArtist(*artist);
     }
 }
 
-void MainFrame::OnTrackButtonClicked(wxCommandEvent &) {
-
+void MainFrame::OnTrackButtonClicked(wxCommandEvent &event) {
+    wxButton* button = dynamic_cast<wxButton*>(event.GetEventObject());
+    if ( button ) {
+        Track *track = (Track*) button->GetClientData();
+        MainFrame::ShowTrack(*track);
+    }
 }
+
+/*
+    wxBitmap bitmap;
+    wxURL urlObj(artist.getImgUrl());
+    if (urlObj.GetError() == wxURL_NOERR) {
+        wxMemoryOutputStream outputStream;
+        if (urlObj.GetInputStream()->IsOk()) {
+            urlObj.GetInputStream()->Read(outputStream);
+        }
+
+        wxMemoryInputStream inputStream(outputStream.GetOutputStreamBuffer(), outputStream.GetSize());
+        wxImage image;
+        if (image.LoadFile(inputStream)) {
+            bitmap = wxBitmap(image);
+            wxStaticBitmap* staticBitmap = new wxStaticBitmap(artistPanel, wxID_ANY, bitmap);
+        }
+    }
+    */

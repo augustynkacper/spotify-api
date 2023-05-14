@@ -22,7 +22,9 @@ Artist::Artist(const Artist &other) {
     imgUrl = other.getImgUrl();
     popularity = other.getPopularity();
     followers = other.getFollowers();
-    topTracks = other.getTopTracks();
+    for (Track track : other.getTopTracks()){
+        topTracks.push_back(track);
+    }
     genres = other.getGenres();
 }
 
