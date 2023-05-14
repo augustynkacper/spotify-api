@@ -59,14 +59,12 @@ json SpotifyAPI::request(const string endpoint, const map<string,string> options
         CURLcode res = curl_easy_perform(curl);
 
         curl_easy_cleanup(curl);
-
-
     }
-    if (response.empty()){
+
+    if (response.empty())
         return nlohmann::json();
-    }
+
     return json::parse(response);
-    return NULL;
 }
 
 void SpotifyAPI::setToken() {
@@ -111,5 +109,18 @@ nlohmann::json SpotifyAPI::getArtistTopTracks(const std::string id) {
 }
 
 nlohmann::json SpotifyAPI::getSongsRecommendations(std::map<std::string, std::string> options) {
-    return request("/v1/recommendations", options);;
+    return request("/v1/recommendations", options);
+}
+
+std::pair<std::vector<Artist>, std::vector<Track>> SpotifyAPI::search(map<string, string> options) {
+    std::vector<Artist> artists;
+    std::vector<Track> tracks;
+    nlohmann::json json = request("/v1/search", options);
+    for (nlohmann::json j : json["artists"]["items"]){
+        artists.push_back(Artist(j));
+    }
+    for (nlohmann::json j : json["tracks"]["items"]){
+        tracks.push_back(Track(j));
+    }
+    return std::make_pair(artists, tracks);
 }

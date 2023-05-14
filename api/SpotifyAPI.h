@@ -30,6 +30,7 @@ public :
 
     nlohmann::json getArtistTopTracks(const std::string);
     nlohmann::json getSongsRecommendations(map<string, string>);
+    std::pair<std::vector<Artist>, std::vector<Track>>  search(map<string, string>);
 };
 
 
