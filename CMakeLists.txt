@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(spotify_api main.cpp api/SpotifyAPI.cpp entities/Album.cpp entities/Album.h entities/Track.cpp entities/Track.h entities/Artist.cpp entities/Artist.h)
-add_executable(gui gui/App.cpp gui/MainFrame.cpp api/SpotifyAPI.cpp entities/Album.cpp entities/Track.cpp entities/Artist.cpp )
+add_executable(gui gui/App.cpp gui/MainFrame.cpp api/SpotifyAPI.cpp entities/Album.cpp entities/Track.cpp entities/Artist.cpp)
 
 #include_directories(/usr/include/x86_64-linux-gnu/curl)
 

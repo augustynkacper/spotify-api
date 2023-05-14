@@ -25,6 +25,7 @@ private:
 
 public:
     Artist(nlohmann::json);
+    Artist(const Artist&);
 
     string getName() const { return name; }
     string getId() const { return id; }

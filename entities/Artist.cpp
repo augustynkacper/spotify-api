@@ -16,3 +16,13 @@ void Artist::setTopTracks(nlohmann::json j) {
     }
 }
 
+Artist::Artist(const Artist &other) {
+    name = other.getName();
+    id = other.getId();
+    imgUrl = other.getImgUrl();
+    popularity = other.getPopularity();
+    followers = other.getFollowers();
+    topTracks = other.getTopTracks();
+    genres = other.getGenres();
+}
+

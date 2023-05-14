@@ -35,7 +35,7 @@ json SpotifyAPI::request(const string endpoint, const map<string,string> options
         for(const auto& pair : options)
             tmpurl += pair.first + "=" + pair.second + "&";
     }
-
+    cout<<tmpurl<<endl;
     if (curl) {
 
         // URL
@@ -57,7 +57,11 @@ json SpotifyAPI::request(const string endpoint, const map<string,string> options
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         CURLcode res = curl_easy_perform(curl);
+        //cout<<tmpurl<<endl;
+        //cout<<response<<endl;
 
+        if (res == CURLE_OK) cout<< "yooo" <<endl;
+        else cout << "beeee" <<endl;
         curl_easy_cleanup(curl);
     }
 
@@ -94,7 +98,7 @@ Artist SpotifyAPI::getArtist(const std::string id) {
 }
 
 Track SpotifyAPI::getTrack(const std::string id, const map<string,string> options) {
-    nlohmann::json json = request("/v1/tracks/" + id);
+    nlohmann::json json = request("/v1/tracks/" + id, options);
 
     Track track(json);
 
@@ -113,14 +117,18 @@ nlohmann::json SpotifyAPI::getSongsRecommendations(std::map<std::string, std::st
 }
 
 std::pair<std::vector<Artist>, std::vector<Track>> SpotifyAPI::search(map<string, string> options) {
-    std::vector<Artist> artists;
-    std::vector<Track> tracks;
+    std::vector<Artist> artists = vector<Artist>();
+    std::vector<Track> tracks = vector<Track>();
     nlohmann::json json = request("/v1/search", options);
+
     for (nlohmann::json j : json["artists"]["items"]){
         artists.push_back(Artist(j));
     }
+
     for (nlohmann::json j : json["tracks"]["items"]){
         tracks.push_back(Track(j));
     }
+
+
     return std::make_pair(artists, tracks);
 }

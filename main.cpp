@@ -7,8 +7,8 @@
 using namespace std;
 
 int main() {
-    std::string clientId = "";
-    std::string clientCreds = "";
+    std::string clientId = "1b4db4f55bd94081b6c02f47becb3b2f";
+    std::string clientCreds = "517070415c5540019ad22c282f88d907";
 
     SpotifyAPI spotifyAPI(clientId, clientCreds);
     spotifyAPI.setToken();
@@ -17,7 +17,7 @@ int main() {
     options.insert(make_pair("q", "future"));
     options.insert(make_pair("type", "artist,track"));
     options.insert(make_pair("limit", "5"));
-
+/*
     std::pair<vector<Artist>, vector<Track>> pair = spotifyAPI.search(options);
 
     cout<< " artists:"<<endl;
@@ -28,26 +28,19 @@ int main() {
     cout<< " tracks:"<<endl;
     for(Track t : pair.second){
         cout<<"   - "<<t.getName()<<endl;
+    }*/
+
+
+
+    map<string, string> options2;
+    options2.insert(make_pair("seed_artists", "0iEtIxbK0KxaSlF7G42ZOp"));
+    options2.insert(make_pair("limit", "5"));
+    Track track = spotifyAPI.getTrack("0YFqKxV9uNu6LUeYkLOKRS", options2);
+
+    for (Track t : track.getRecommendations()){
+        cout <<t.getName()<<endl;
     }
 
-
-
-    /*
-    Track track = spotifyAPI.getTrack("0vjeOZ3Ft5jvAi9SBFJm1j", options);
-    cout<<track.getName()<<endl;
-    cout<< " artists:"<<endl;
-    for(string a : track.getArtists()){
-        cout<<"   - "<<a<<endl;
-    }
-
-    cout<<" recommendations:"<<endl;
-    for(Track t : track.getRecommendations()){
-        cout<<"   - "<<t.getName()<<endl;
-    }
-     */
-
-    //nlohmann::json j = spotifyAPI.getSongsRecommendations(options);
-    //cout<<j.dump(3);
 
     return 0;
 }

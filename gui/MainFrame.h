@@ -10,10 +10,21 @@ public:
     MainFrame(const wxString& title, SpotifyAPI *spotifyApi);
 private:
     wxTextCtrl* textCtrl;
-    wxButton* button;
+    wxButton* searchButton;
+
+    wxPanel* resultPanel;
+    wxPanel* searchPanel;
     SpotifyAPI *spotifyApi;
 
-    void OnButtonClicked(wxCommandEvent&);
+    void OnSearchButtonClicked(wxCommandEvent&);
+    void OnArtistButtonClicked(wxCommandEvent&);
+    void OnTrackButtonClicked(wxCommandEvent&);
+
+    void ShowTrack(Track track);
+    void ShowArtist(Artist artist);
+    void ShowSearchResults(pair<vector<Artist>, vector<Track>>);
+
+    void ClearResultPanel();
 };
 
 
