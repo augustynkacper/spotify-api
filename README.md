@@ -14,7 +14,7 @@ To run, You'll need the following:
   - libraries:
     * wxWidgets
     * curl
-    * nlohmann's JSON
+    * nlohmann's JSON (json.hpp file should be in root directory)
 
 ### Running
 
