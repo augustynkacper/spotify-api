@@ -22,6 +22,7 @@ private:
 public:
 
     Track(nlohmann::json);
+    Track(const Track&);
 
     void setSongsRecommendations( nlohmann::json);
 

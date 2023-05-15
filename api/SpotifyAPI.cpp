@@ -121,15 +121,13 @@ std::pair<std::vector<Artist>, std::vector<Track>> SpotifyAPI::search(map<string
 
     for (nlohmann::json j : json["artists"]["items"]){
         Artist artist(j);
-        j = getArtistTopTracks(artist.getId());
-        artist.setTopTracks(j);
         artists.push_back(artist);
     }
 
     for (nlohmann::json j : json["tracks"]["items"]){
-        tracks.push_back(Track(j));
+        Track track(j);
+        tracks.push_back(track);
     }
-
 
     return std::make_pair(artists, tracks);
 }

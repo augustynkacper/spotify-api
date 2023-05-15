@@ -17,9 +17,11 @@ private:
     SpotifyAPI *spotifyApi;
 
     void OnSearchButtonClicked(wxCommandEvent&);
-    void OnArtistButtonClicked(wxCommandEvent&);
-    void OnTrackButtonClicked(wxCommandEvent&);
+    void OnArtistClicked(wxMouseEvent&);
+    void OnTrackClicked(wxMouseEvent&);
 
+    void ShowTrackLink(Track, wxBoxSizer *);
+    void ShowArtistLink(Artist , wxBoxSizer *);
     void ShowTrack(Track track);
     void ShowArtist(Artist artist);
     void ShowSearchResults(pair<vector<Artist>, vector<Track>>);

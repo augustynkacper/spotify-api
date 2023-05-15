@@ -19,3 +19,13 @@ void Track::setSongsRecommendations(nlohmann::json json) {
     }
 }
 
+Track::Track(const Track &other) {
+    name = other.getName();
+    popularity = other.getPopularity();
+    duration = other.getDuration();
+    imgUrl = other.getImgUrl();
+    id = other.getId();
+    recommendations = other.getRecommendations();
+    artists = other.getArtists();
+}
+
