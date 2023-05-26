@@ -36,9 +36,21 @@ MainFrame::MainFrame(const wxString& title, SpotifyAPI *spotifyApi) : wxFrame(nu
     sizer->Add(resultPanel, 1, wxEXPAND);
     this->SetSizerAndFit(sizer);
 }
-
+std::string parse(const std::string& input) {
+    std::string result;
+    for (char c : input) {
+        if (c == ' ')
+            result += "%20";
+        else
+            result += c;
+    }
+    return result;
+}
 void MainFrame::OnSearchButtonClicked(wxCommandEvent &) {
     std::string input = textCtrl->GetValue().ToStdString();
+    input = parse(input);
+
+    std::cout<<input<<std::endl;
 
     map<string, string> options;
     options.insert(make_pair("q", input));
